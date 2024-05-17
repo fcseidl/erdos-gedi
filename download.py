@@ -1,78 +1,77 @@
-
-import pandas as pd
-
-
-class Subsetter:
-
-    def __init__(self, layers, flags, keepevery=1, predicate=None):
-        self.layers = layers
-        self.flags = flags
-        self.ke = keepevery
-        self._columns = list(layers) + list(flags.keys())
-        self._pred = predicate
-
-    def predicate(self, row) -> bool:
-        try:
-            return self._pred(row)
-        except KeyError as e:
-            print(e.message)
-            return False
-
-    def subsetbeam(self, granule, beam) -> pd.DataFrame:
-        # load all needed columns into DataFrame
-        bdf = pd.DataFrame({
-            layer: list(granule[beam + '/' + layer])
-            for layer in self._columns
-        })
-
-        # drop potentially most data
-        bdf = bdf[0:bdf.shape[0]:self.ke]
-
-        # drop flagged rows, then flag columns
-        for k in self.flags.keys():
-            bdf = bdf[bdf[k] == self.flags[k]].drop(k, axis=1)
-
-        # drop rows failing predicate
-        if self._pred is not None:
-            index = [self.predicate(row) for _, row in bdf.iterrows()]
-            bdf = bdf[index]
-
-        return bdf
-
-    def subsetgranule(self, granule, beams="all") -> pd.DataFrame:
-        if beams == "all":
-            beams = [k for k in granule.keys() if k.startswith("BEAM")]
-        return pd.concat([self.subsetbeam(granule, b) for b in beams])
-
-
-# TODO: figure out automatic authentication
-"""def gedi_request(url, user, pwd):
-    pm = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-    pm.add_password(None, "https://urs.earthdata.nasa.gov", user, pwd)
-    cookie_jar = CookieJar()
-    opener = urllib.request.build_opener(
-        urllib.request.HTTPBasicAuthHandler(pm),
-        urllib.request.HTTPCookieProcessor(cookie_jar)
-    )
-    urllib.request.install_opener(opener)
-    myrequest = urllib.request.Request(url)
-    return urllib.request.urlopen(myrequest)
-
-
-def subseturl(url, setter: Subsetter, user, pwd, beams="all") -> pd.DataFrame:
-    r = gedi_request(url, user, pwd)
-    r.begin()
-    with BytesIO() as filelike:
-        try:
-            while True:
-                chunk = r.read()
-                if chunk:
-                    filelike.write(chunk)
-                else:
-                    break
-            granule = h5py.File(filelike, 'r')
-            return setter.subsetgranule(granule, beams=beams)
-        except Exception as e:
-            print(f"An Exception of type {type(e)} caused failed download from {url}")
-            return e
 """
+Acknowledgement: this module borrows code written by Erick Verleye and Frank Seidl in
+https://github.com/earthlab/BioExtremes/blob/main/GEDI/api.py
+"""
+
+import os
+from io import BytesIO
+import certifi
+from typing import Callable
+from http.cookiejar import CookieJar
+import urllib
+import h5py
+
+
+class Downloader:
+    """
+    This class downloads GEDI granules for subsetting. Note that the only way to access the
+    contents of a granule is through the process_in_memory_file() method. This is to discourage writing unprocessed
+    files to disk, since the raw data is large and mostly not useful.
+    """
+
+    def __init__(self):
+        """Takes Earth Data login credentials from 'BEX_USER' and 'BEX_PWD' environment variables."""
+        self._username = os.environ['BEX_USER']
+        self._password = os.environ['BEX_PWD']
+
+        # resolve potential issue with SSL certs
+        ssl_cert_path = certifi.where()
+        if 'SSL_CERT_FILE' not in os.environ or os.environ['SSL_CERT_FILE'] != ssl_cert_path:
+            os.environ['SSL_CERT_FILE'] = ssl_cert_path
+        if 'REQUESTS_CA_BUNDLE' not in os.environ or os.environ['REQUESTS_CA_BUNDLE'] != ssl_cert_path:
+            os.environ['REQUESTS_CA_BUNDLE'] = ssl_cert_path
+
+    def _request_raw_data(self, url: str):
+        """
+        Request data from the NASA earthdata servers. Authentication is established using the username and password
+        found in the local ~/.netrc file.
+
+        :param url: remote location of data file
+        :return: raw data returned by the server
+        """
+        pm = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+        pm.add_password(None, "https://urs.earthdata.nasa.gov", self._username, self._password)
+        cookie_jar = CookieJar()
+        opener = urllib.request.build_opener(
+            urllib.request.HTTPBasicAuthHandler(pm),
+            urllib.request.HTTPCookieProcessor(cookie_jar)
+        )
+        urllib.request.install_opener(opener)
+        myrequest = urllib.request.Request(url)
+        return urllib.request.urlopen(myrequest)
+
+    def process_granule(self, url: str, func: Callable, *args, **kwargs):
+        """
+        Perform an action on the contents of a granule while storing them in a memory file in RAM.
+
+        :param url: webpage url
+        :param func: Method which takes an h5py File object as its first argument and performs the action.
+        :param args: Passed to func.
+        :param kwargs: Passed to func.
+        :return: Result of func([.h5 archive at url], *args, **kwargs), or any caught exception.
+        """
+        response = self._request_raw_data(url)
+        response.begin()
+        with BytesIO() as memfile:
+            try:
+                while True:
+                    chunk = response.read()
+                    if chunk:
+                        memfile.write(chunk)
+                    else:
+                        break
+                memh5 = h5py.File(memfile, 'r')
+                return func(memh5, *args, **kwargs)
+            except Exception as e:
+                print(f"An Exception of type {type(e)} caused failed download from {url}")
+                return e

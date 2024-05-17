@@ -1,9 +1,16 @@
+"""
+This demo obtains data from the granule GEDI02_A_2019108185228_O01971_03_T00922_02_003_01_V002,
+dropping low-quality and degraded shots, as well as any shots west of 100W longitude. Shot locations
+are scatterplotted, colored by beam, in a cylindrical projection. Note that distinguishing beams
+requires zooming in.
+"""
 
 import matplotlib.pyplot as plt
-import h5py
 
-from download import Subsetter
+from subset import Subsetter
+from download import Downloader
 
+"""Create a Subsetter object to download only the data we desire."""
 
 layers = ["lat_lowestmode", "lon_lowestmode", "beam", "rh"]
 flags = {
@@ -13,17 +20,23 @@ flags = {
 def pred(row):
     return row["lon_lowestmode"] > -100
 
-
 setter = Subsetter(layers, flags, keepevery=100, predicate=pred)
 
-# file too large to push to git
-granule = h5py.File("GEDI02_A_2019108185228_O01971_03_T00922_02_003_01_V002.h5", 'r')
-df = setter.subsetgranule(granule)
 
-# TODO: authenticate
-# url = "https://e4ftl01.cr.usgs.gov//GEDI_L1_L2/GEDI/GEDI02_A.002/2019.04.18/GEDI02_A_2019108185228_O01971_03_T00922_02_003_01_V002.h5"
-# TODO: retrieve pwd from local file so it doesn't get published to github
-# df = subseturl(url, setter, user="fcseidl", pwd="not my real pwd")
+"""We can run the Subsetter locally on the pre-downloaded granule."""
+
+# granule = h5py.File("GEDI02_A_2019108185228_O01971_03_T00922_02_003_01_V002.h5", 'r')
+# df = setter.subsetgranule(granule)
+
+
+"""
+Or we can use a Downloader to temporarily store the granule data for subsetting. 
+This way, none of the data we'll eventually discard is ever written to disk.
+"""
+
+url = "https://e4ftl01.cr.usgs.gov//GEDI_L1_L2/GEDI/GEDI02_A.002/2019.04.18/GEDI02_A_2019108185228_O01971_03_T00922_02_003_01_V002.h5"
+df = Downloader().process_granule(url, setter.subsetgranule)
+
 
 for b in range(1, 9):
     bidx = (df["beam"] == b)
