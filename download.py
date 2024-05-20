@@ -32,13 +32,6 @@ class Downloader:
             os.environ['REQUESTS_CA_BUNDLE'] = ssl_cert_path
 
     def _request_raw_data(self, url: str):
-        """
-        Request data from the NASA earthdata servers. Authentication is established using the username and password
-        found in the local ~/.netrc file.
-
-        :param url: remote location of data file
-        :return: raw data returned by the server
-        """
         pm = urllib.request.HTTPPasswordMgrWithDefaultRealm()
         pm.add_password(None, "https://urs.earthdata.nasa.gov", self._username, self._password)
         cookie_jar = CookieJar()
@@ -54,7 +47,7 @@ class Downloader:
         """
         Perform an action on the contents of a granule while storing them in a memory file in RAM.
 
-        :param url: webpage url
+        :param url: url of granule's .h5 archive
         :param func: Method which takes an h5py File object as its first argument and performs the action.
         :param args: Passed to func.
         :param kwargs: Passed to func.

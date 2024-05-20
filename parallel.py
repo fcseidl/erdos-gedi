@@ -44,6 +44,7 @@ class ParallelDownloadAndSubset:
         """
         Download and subset data from a list of GEDI granule urls, like this one:
         'https://e4ftl01.cr.usgs.gov/GEDI/GEDI02_A.002/2019.04.18/GEDI02_A_2019108002012_O01959_01_T03909_02_003_01_V002.h5'
+        A rudimentary progress bar is displayed.
 
         :param urls: Web address of each GEDI granule.
         :param kwargs: Passed to concurrent.futures.ProcessPoolExecutor.map(). Note that the number of parallel
