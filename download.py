@@ -21,8 +21,11 @@ class Downloader:
 
     def __init__(self):
         """Takes Earth Data login credentials from 'EARTHDATA_USER' and 'EARTHDATA_PWD' environment variables."""
-        self._username = os.environ['EARTHDATA_USER']
-        self._password = os.environ['EARTHDATA_PWD']
+        try:
+            self._username = os.environ['EARTHDATA_USER']
+            self._password = os.environ['EARTHDATA_PWD']
+        except KeyError:
+            raise KeyError("Downloading GEDI data requires an Earthdata login. This package looks for your Earthdata credentials in the environment variables EARTHDATA_USER and EARTHDATA_PWD. Make sure these are set accordingly.")
 
         # resolve potential issue with SSL certs
         ssl_cert_path = certifi.where()
