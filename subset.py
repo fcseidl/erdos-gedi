@@ -1,5 +1,6 @@
 
 import pandas as pd
+from shapely.geometry import Point
 
 
 class Subsetter:
@@ -10,7 +11,7 @@ class Subsetter:
 
         :param layers: List of names of GEDI product layers to keep, e.g., randomly,
                         "rx_processing_a6/ancillary/pulse_sep_thresh"
-        :param flags: Dictionary mapping flag layers to values which will be required for those flags, e.g.,
+        :param flags: Dictionary mapping flag layers to values which will be enforced for those flags, e.g.,
                         {"quality_flag": 1} will result in low-quality shots being dropped.
         :param keepevery: Downsampling factor. For instance, if keepevery == 10, then only every 10th
                             shot is considered.
@@ -37,7 +38,7 @@ class Subsetter:
             for layer in self._columns
         })
 
-        # drop potentially most data
+        # downsample data
         bdf = bdf[0:bdf.shape[0]:self.ke]
 
         # drop flagged rows, then flag columns
@@ -63,3 +64,19 @@ class Subsetter:
         if beams == "all":
             beams = [k for k in granule.keys() if k.startswith("BEAM")]
         return pd.concat([self.subsetbeam(granule, b) for b in beams])
+
+
+class InBounds:
+
+    def __init__(self, bounds):
+        """
+        Define a predicate which fails shots whose lon_lowestmode and lat_lowestmode are out of bounds.
+        bounds object should have a contains() method which accepts a shapely Point object, e.g., if
+        bounds is a shapely Polygon.
+        """
+        self._bounds = bounds
+
+    def __call__(self, shot):
+        return self._bounds.contains(
+            Point(shot["lon_lowestmode"], shot["lat_lowestmode"]))
+
