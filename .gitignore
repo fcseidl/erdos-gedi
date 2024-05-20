@@ -2,4 +2,5 @@ _*
 *.h5
 .i*
 venv/
+*.slurm
 
