@@ -1,5 +1,8 @@
 """
-This scripts downloads data from L2A shots in New York State.
+This script downloads data from L2A shots in New York State. Execution may take
+hours or days, depending on the amount parallelism employed. However, progress
+is saved continually, and the script picks up where it left off if restarted.
+Also note that the progress bar slightly lags true progress.
 """
 
 import sys
@@ -40,8 +43,8 @@ if __name__ == "__main__":
     }
 
     # only save shots inside New York State
-    with open("nys_simple_boundaries.pickle", "rb") as file:
-        bounds = load(file)
+    with open("nys_simple_boundaries.pickle", "rb") as polygon:
+        bounds = load(polygon)
     in_nys = InBounds(bounds)
 
     setter = Subsetter(layers, flags, keepevery=10, predicate=in_nys)

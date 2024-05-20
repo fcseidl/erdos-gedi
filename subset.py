@@ -12,7 +12,8 @@ class Subsetter:
         :param layers: List of names of GEDI product layers to keep, e.g., randomly,
                         "rx_processing_a6/ancillary/pulse_sep_thresh"
         :param flags: Dictionary mapping flag layers to values which will be enforced for those flags, e.g.,
-                        {"quality_flag": 1} will result in low-quality shots being dropped.
+                        {"quality_flag": 1} will result in low-quality shots being dropped. Note that all used
+                        flags are dropped from the DataFrames produced, since they are constant in the data kept.
         :param keepevery: Downsampling factor. For instance, if keepevery == 10, then only every 10th
                             shot is considered.
         :param predicate: Boolean function used to determine shots to drop from the data. This function may assume
