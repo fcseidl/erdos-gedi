@@ -20,9 +20,9 @@ class Downloader:
     """
 
     def __init__(self):
-        """Takes Earth Data login credentials from 'BEX_USER' and 'BEX_PWD' environment variables."""
-        self._username = os.environ['BEX_USER']
-        self._password = os.environ['BEX_PWD']
+        """Takes Earth Data login credentials from 'EARTHDATA_USER' and 'EARTHDATA_PWD' environment variables."""
+        self._username = os.environ['EARTHDATA_USER']
+        self._password = os.environ['EARTHDATA_PWD']
 
         # resolve potential issue with SSL certs
         ssl_cert_path = certifi.where()

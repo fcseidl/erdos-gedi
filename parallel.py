@@ -50,4 +50,4 @@ class ParallelDownloadAndSubset:
         :param kwargs: Passed to concurrent.futures.ProcessPoolExecutor.map(). Note that the number of parallel
                     processes is given by the max_workers keyword.
         """
-        process_map(self._process_url, urls, **kwargs)
+        process_map(self._process_url, urls, **kwargs)      # TODO: an unordered map would be marginally better here
