@@ -32,6 +32,9 @@ if __name__ == "__main__":
         "rh",
         "land_cover_data/landsat_water_persistence",
         "land_cover_data/landsat_treecover",
+        "land_cover_data/region_class",
+        "land_cover_data/urban_proportion",
+        "land_cover_data/urban_focal_window_size",
         "shot_number"
     ]
 
