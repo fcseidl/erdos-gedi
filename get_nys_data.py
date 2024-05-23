@@ -57,7 +57,7 @@ if __name__ == "__main__":
         urls = [line.rstrip('\n') for line in granule_list]
     print(f"Downloading and subsetting {len(list(urls))} granules over {nproc} processes...")
     ParallelDownloadAndSubset(loader, setter, "data").process_urls(
-        urls,
+        urls[100:],
         max_workers=nproc,
-        chunksize=10
+        chunksize=5
     )
