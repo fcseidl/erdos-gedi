@@ -1,5 +1,5 @@
-,beam,channel,lat_lowestmode,lon_lowestmode,elev_lowestmode,delta_time,rh,land_cover_data/landsat_water_persistence,land_cover_data/landsat_treecover,land_cover_data/region_class,land_cover_data/urban_proportion,land_cover_data/urban_focal_window_size,shot_number
-110440,6,3,41.966445001143114,-74.94722551606358,570.3409,42786295.422776,"[-1.46 -1.34 -1.23 -1.16 -1.04 -0.97 -0.89 -0.82 -0.74 -0.67 -0.59 -0.52
+,Class,Group,beam,channel,lat_lowestmode,lon_lowestmode,elev_lowestmode,delta_time,rh,land_cover_data/landsat_water_persistence,land_cover_data/landsat_treecover,land_cover_data/region_class,land_cover_data/urban_proportion,land_cover_data/urban_focal_window_size,shot_number
+0,Pasture/Hay,Planted/Cultivated,6,3,41.96644500114312,-74.94722551606358,570.3409,42786295.422776,"[-1.46 -1.34 -1.23 -1.16 -1.04 -0.97 -0.89 -0.82 -0.74 -0.67 -0.59 -0.52
  -0.48 -0.41 -0.33 -0.29 -0.22 -0.18 -0.11 -0.03  0.    0.07  0.11  0.18
   0.22  0.29  0.37  0.41  0.48  0.52  0.59  0.67  0.71  0.78  0.82  0.89
   0.97  1.01  1.08  1.12  1.19  1.23  1.27  1.34  1.38  1.46  1.49  1.53

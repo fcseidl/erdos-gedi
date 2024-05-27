@@ -1,5 +1,5 @@
-,beam,channel,lat_lowestmode,lon_lowestmode,elev_lowestmode,delta_time,rh,land_cover_data/landsat_water_persistence,land_cover_data/landsat_treecover,land_cover_data/region_class,land_cover_data/urban_proportion,land_cover_data/urban_focal_window_size,shot_number
-71100,3,1,41.119465379715535,-73.878908635268,-33.167965,44655508.14638695,"[-0.89 -0.89 -0.86 -0.82 -0.82 -0.78 -0.74 -0.71 -0.71 -0.67 -0.63 -0.63
+,Class,Group,beam,channel,lat_lowestmode,lon_lowestmode,elev_lowestmode,delta_time,rh,land_cover_data/landsat_water_persistence,land_cover_data/landsat_treecover,land_cover_data/region_class,land_cover_data/urban_proportion,land_cover_data/urban_focal_window_size,shot_number
+0,Open Water,Water,3,1,41.119465379715535,-73.878908635268,-33.167965,44655508.14638695,"[-0.89 -0.89 -0.86 -0.82 -0.82 -0.78 -0.74 -0.71 -0.71 -0.67 -0.63 -0.63
  -0.59 -0.56 -0.56 -0.52 -0.48 -0.48 -0.44 -0.41 -0.41 -0.37 -0.37 -0.33
  -0.29 -0.29 -0.26 -0.22 -0.22 -0.18 -0.18 -0.14 -0.11 -0.11 -0.07 -0.03
  -0.03  0.    0.    0.03  0.07  0.07  0.11  0.14  0.14  0.18  0.18  0.22
