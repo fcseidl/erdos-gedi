@@ -3,4 +3,5 @@ _*
 .i*
 venv/
 *.slurm
+*.geotiff
 

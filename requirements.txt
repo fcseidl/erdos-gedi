@@ -1,6 +1,0 @@
-pandas~=2.2.2
-shapely~=2.0.4
-certifi~=2024.2.2
-h5py~=3.11.0
-tqdm~=4.66.4
-matplotlib~=3.9.0
