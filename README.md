@@ -1,0 +1,1 @@
+This is the GitHub repo for Erdos Institute May 2024 Data Science Boot Camp project #41. Our project predicts [land coverage](https://www.mrlc.gov/data) in New York State from [canopy height and structure](https://developers.google.com/earth-engine/datasets/catalog/LARSE_GEDI_GEDI02_A_002) data. Our executive summary include more details on our work.
